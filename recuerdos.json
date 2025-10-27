@@ -1,17 +1,17 @@
 {
   "titulo_general": "🌿 Recuerdos de Enrique",
-  "foto_lateral": "media/perezoso.jpg",
+  "foto_lateral": "./media/perezoso.jpg",
   "descripcion_general": "Algún no podré estar, pero nunca sentiras ue me fuí.",
   "recuerdos": [
     {
       "titulo": "Cuando leas esto",
       "texto": "Respira hondo. Estoy contigo.",
-      "media": ".media/PHOTO_01.jpg"
+      "media": "./media/PHOTO_01.jpg"
     },
     {
       "titulo": "Nuestro primer viaje",
       "texto": "Aquel sol y esa risa siguen aquí.",
-      "media": ".media/VIDEO_01.mov"
+      "media": "./media/VIDEO_01.mov"
     }
   ]
 }
