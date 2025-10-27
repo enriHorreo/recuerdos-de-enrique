@@ -1,30 +1,225 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<title>🌿 Recuerdos de Enrique</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>🌿 Recuerdos</title>
+<meta name="description" content="Un recuerdo diferente en cada visita." />
 <style>
-  body { font-family: 'Georgia', serif; background:#faf8f3; color:#333; max-width:600px; margin:auto; padding:2em; }
-  .recuerdo { margin-bottom:2em; border-bottom:1px solid #ddd; padding-bottom:1em; }
-  a { color:#444; }
+  :root{
+    --bg:#faf8f3; --fg:#2f2a25; --muted:#6b6158; --card:#ffffff; --line:#e6e0d9;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0; background:var(--bg); color:var(--fg);
+    font-family: ui-serif, Georgia, "Times New Roman", serif;
+  }
+  .wrap{
+    display:grid; min-height:100dvh;
+    grid-template-columns: 380px 1fr;
+  }
+  /* Columna lateral con la foto del perezoso */
+  .side{
+    background:#f2eee7; border-right:1px solid var(--line);
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    padding:32px 24px; gap:20px; position:sticky; top:0; height:100dvh;
+  }
+  .side img{
+    width:100%; max-width:300px; height:auto; object-fit:cover;
+    border-radius:18px; box-shadow:0 6px 24px rgba(0,0,0,.08);
+    user-select:none; -webkit-user-drag:none;
+  }
+  .brand{ text-align:center; }
+  .brand h1{ margin:.2em 0 .1em; font-size:1.6rem; letter-spacing:.2px }
+  .brand p{ margin:0; color:var(--muted); font-size:.98rem }
+
+  /* Contenido principal */
+  .main{
+    padding:48px 28px; display:flex; align-items:center; justify-content:center;
+  }
+  .card{
+    width:min(820px, 100%); background:var(--card); border:1px solid var(--line);
+    border-radius:22px; padding:28px; box-shadow:0 12px 40px rgba(0,0,0,.05);
+  }
+  .header{
+    margin-bottom:18px; border-bottom:1px solid var(--line); padding-bottom:16px;
+  }
+  .header h2{ margin:0; font-size:1.5rem }
+  .header p{ margin:.4em 0 0; color:var(--muted) }
+
+  .media{
+    margin:18px 0 8px; border-radius:16px; overflow:hidden; background:#00000010;
+  }
+  .media img, .media video, .media audio, .media iframe{ width:100%; display:block }
+  .media video, .media img{ height:auto; }
+  .media audio{ width:100%; }
+
+  .footer{
+    display:flex; gap:10px; align-items:center; justify-content:space-between; margin-top:10px; color:var(--muted);
+    font-size:.95rem; flex-wrap:wrap;
+  }
+  .btn{
+    display:inline-block; border:1px solid var(--line); padding:10px 14px; border-radius:12px; text-decoration:none; color:var(--fg);
+    background:#f7f3ee; transition:.2s;
+  }
+  .btn:hover{ transform:translateY(-1px) }
+
+  @media (max-width: 880px){
+    .wrap{ grid-template-columns: 1fr; }
+    .side{ position:relative; height:auto; padding:24px 18px }
+    .main{ padding:22px 16px }
+  }
 </style>
 </head>
 <body>
-<h1>🌿 Recuerdos de Enrique</h1>
-<p>Aunque me sea imposible estar en cuerpo a tu lado, ningn dia que entres te fallaré en sacarte una sonrisa.</p>
-<div id="contenedor"></div>
+<div class="wrap">
+  <!-- Lateral con la foto del perezoso (fija) -->
+  <aside class="side">
+    <img id="fotoLateral" src="media/perezoso.jpg" alt="Siempre contigo — perezoso" />
+    <div class="brand">
+      <h1 id="tituloGeneral">🌿 Recuerdos de Enrique</h1>
+      <p id="descGeneral">Cada visita muestra un recuerdo distinto.</p>
+    </div>
+  </aside>
+
+  <!-- Tarjeta del recuerdo aleatorio -->
+  <main class="main">
+    <article class="card">
+      <header class="header">
+        <h2 id="tituloRecuerdo">Cargando…</h2>
+        <p id="textoRecuerdo"></p>
+      </header>
+
+      <section class="media" id="mediaRecuerdo" aria-label="Contenido del recuerdo"></section>
+
+      <div class="footer">
+        <span id="metaRecuerdo"></span>
+        <a class="btn" href="" id="btnAbrir" target="_blank" rel="noopener">Abrir en pestaña nueva</a>
+      </div>
+    </article>
+  </main>
+</div>
 
 <script>
-fetch('recuerdos.json')
-  .then(r => r.json())
-  .then(data => {
-    data.forEach((r, i) => {
-      const div = document.createElement('div');
-      div.className = 'recuerdo';
-      div.innerHTML = `<h3>Día ${i+1} — ${r.titulo}</h3><p>${r.texto}</p><p><a href="${r.enlace}" target="_blank">Ver más</a></p>`;
-      document.getElementById('contenedor').appendChild(div);
-    });
-  });
+/**
+ * Carga recuerdos.json, elige uno al azar (o por ?i=) y renderiza.
+ * Estructura esperada en recuerdos.json:
+ * {
+ *   "titulo_general": "🌿 Recuerdos de Enrique",
+ *   "foto_lateral": "media/perezoso.jpg",
+ *   "descripcion_general": "Texto aquí…",
+ *   "recuerdos": [
+ *     {"titulo":"...", "texto":"...", "media":"URL_o_ruta"},
+ *     ...
+ *   ]
+ * }
+ */
+(async function(){
+  try{
+    const res = await fetch('recuerdos.json', { cache: 'no-store' });
+    const data = await res.json();
+
+    // Config global (si está en el JSON, sobreescribe lo del HTML)
+    if (data.titulo_general) document.getElementById('tituloGeneral').textContent = data.titulo_general;
+    if (data.descripcion_general) document.getElementById('descGeneral').textContent = data.descripcion_general;
+    if (data.foto_lateral) document.getElementById('fotoLateral').src = data.foto_lateral;
+
+    const lista = Array.isArray(data.recuerdos) ? data.recuerdos : [];
+
+    if(!lista.length){
+      document.getElementById('tituloRecuerdo').textContent = 'No hay recuerdos todavía';
+      document.getElementById('textoRecuerdo').textContent  = 'Añade recuerdos en recuerdos.json y vuelve a cargar.';
+      document.getElementById('btnAbrir').style.display = 'none';
+      return;
+    }
+
+    // Permite forzar un recuerdo concreto con ?i=2
+    const params = new URLSearchParams(location.search);
+    const idxParam = params.has('i') ? parseInt(params.get('i'),10) : NaN;
+    const index = Number.isInteger(idxParam) && idxParam >=0 && idxParam < lista.length
+      ? idxParam
+      : Math.floor(Math.random() * lista.length);
+
+    const r = lista[index] || {};
+
+    // Pintar título y texto
+    document.getElementById('tituloRecuerdo').textContent = r.titulo || `Recuerdo ${index+1}`;
+    document.getElementById('textoRecuerdo').textContent  = r.texto || '';
+
+    // Render de media (imagen / vídeo / audio / YouTube / Google Drive / enlace)
+    const mediaEl = document.getElementById('mediaRecuerdo');
+    mediaEl.innerHTML = renderMedia(r.media);
+
+    // Botón "Abrir en pestaña"
+    const btn = document.getElementById('btnAbrir');
+    if (r.media) { btn.href = r.media; } else { btn.style.display = 'none'; }
+
+    // Meta pie
+    document.getElementById('metaRecuerdo').textContent = `Mostrando 1 de ${lista.length} · Este es el nº ${index+1}`;
+
+    function renderMedia(url){
+      if(!url) return '<div style="padding:18px">Sin archivo de media.</div>';
+      const u = url.trim();
+
+      // YouTube (urls youtu.be/ID o youtube.com/watch?v=ID o /embed/ID)
+      const yt = parseYouTube(u);
+      if(yt){
+        return `<iframe src="https://www.youtube.com/embed/${yt}" title="YouTube"
+                  frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowfullscreen style="aspect-ratio:16/9; width:100%;"></iframe>`;
+      }
+
+      // Imagen
+      if (/\.(png|jpe?g|gif|webp|avif)$/i.test(u)){
+        return `<img src="${u}" alt="Media">`;
+      }
+
+      // Vídeo
+      if (/\.(mp4|webm|ogg)$/i.test(u)){
+        return `<video controls preload="metadata"><source src="${u}"></video>`;
+      }
+
+      // Audio
+      if (/\.(mp3|wav|ogg|m4a)$/i.test(u)){
+        return `<audio controls preload="metadata" style="width:100%"><source src="${u}"></audio>`;
+      }
+
+      // Google Drive (enlace /file/d/ID/)
+      const driveId = parseDriveId(u);
+      if (driveId){
+        return `<iframe src="https://drive.google.com/file/d/${driveId}/preview" style="aspect-ratio:16/9; width:100%;"></iframe>`;
+      }
+
+      // Enlace genérico
+      return `<div style="padding:16px"><a href="${u}" target="_blank" rel="noopener">Abrir archivo</a></div>`;
+    }
+
+    function parseYouTube(u){
+      try{
+        const url = new URL(u);
+        if (url.hostname.includes('youtu.be')) return url.pathname.slice(1);
+        if (url.hostname.includes('youtube.com')){
+          const v = url.searchParams.get('v');
+          if (v) return v;
+          const m = url.pathname.match(/\/embed\/([^\/\?]+)/);
+          if (m) return m[1];
+        }
+      }catch(e){}
+      return null;
+    }
+
+    function parseDriveId(u){
+      const m = u.match(/\/file\/d\/([^\/]+)\//);
+      return m ? m[1] : null;
+    }
+
+  }catch(e){
+    document.getElementById('tituloRecuerdo').textContent = 'Error cargando recuerdos';
+    document.getElementById('textoRecuerdo').textContent  = 'Asegúrate de que "recuerdos.json" existe en la rama main y que GitHub Pages está activo.';
+    console.error(e);
+  }
+})();
 </script>
 </body>
 </html>
