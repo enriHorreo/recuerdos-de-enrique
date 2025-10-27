@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>🌿 Recuerdos de Enrique</title>
+<style>
+  body { font-family: 'Georgia', serif; background:#faf8f3; color:#333; max-width:600px; margin:auto; padding:2em; }
+  .recuerdo { margin-bottom:2em; border-bottom:1px solid #ddd; padding-bottom:1em; }
+  a { color:#444; }
+</style>
+</head>
+<body>
+<h1>🌿 Recuerdos de Enrique</h1>
+<p>Si estás leyendo esto, es porque sigo contigo. Cada día, abre un recuerdo distinto.</p>
+<div id="contenedor"></div>
+
+<script>
+fetch('recuerdos.json')
+  .then(r => r.json())
+  .then(data => {
+    data.forEach((r, i) => {
+      const div = document.createElement('div');
+      div.className = 'recuerdo';
+      div.innerHTML = `<h3>Día ${i+1} — ${r.titulo}</h3><p>${r.texto}</p><p><a href="${r.enlace}" target="_blank">Ver más</a></p>`;
+      document.getElementById('contenedor').appendChild(div);
+    });
+  });
+</script>
+</body>
+</html>
