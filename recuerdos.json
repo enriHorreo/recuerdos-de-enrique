@@ -1,13 +1,17 @@
-[
-  {
-    "titulo": "Cuando leas esto",
-    "texto": "El primer día del resto de mi vida.",
-    "enlace": "./media/PHOTO_1.jpg"
-  },
-   {
-    "titulo": "Uno de los dias más felices de ni vida",
-    "texto": "De Valencia solo salen buenas las naranjas...",
-    "enlace": "./media/VIDEO_1.mov"
-  }
-]
-  
+{
+  "titulo_general": "🌿 Recuerdos de Enrique",
+  "foto_lateral": "media/perezoso.jpg",
+  "descripcion_general": "Algún no podré estar, pero nunca sentiras ue me fuí.",
+  "recuerdos": [
+    {
+      "titulo": "Cuando leas esto",
+      "texto": "Respira hondo. Estoy contigo.",
+      "media": ".media/PHOTO_01.jpg"
+    },
+    {
+      "titulo": "Nuestro primer viaje",
+      "texto": "Aquel sol y esa risa siguen aquí.",
+      "media": ".media/VIDEO_01.mov"
+    }
+  ]
+}
