@@ -1,12 +1,7 @@
 [
   {
     "titulo": "Cuando leas esto",
-    "texto": "Si hoy has escaneado el QR, recuerda que sigo contigo.",
+    "texto": "Aunque ne sea imposible estar en cuerpo a tu lado, ningn que entres fallaré en sacarte una sonrisa.",
     "enlace": "./media/PHOTO_1.jpg"
-  },
-  {
-    "titulo": "Nuestro primer dia ...",
-    "texto": "Gracias por aperecer en mi camino..",
-    "enlace": "./media/VIDEO.mp4"
-  }
-]
+  }}
+  
