@@ -3,6 +3,11 @@
     "titulo": "Cuando leas esto",
     "texto": "El primer día del restop de mi vida.",
     "enlace": "./media/PHOTO_1.jpg"
+  },
+   {
+    "titulo": "Cuando leas esto",
+    "texto": "El primer día del restop de mi vida.",
+    "enlace": "./media/VIDEO_1.mov"
   }
 ]
   
