@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Agregar Recuerdo</title>
+<style>
+  body { font-family: sans-serif; background:#f2f2f2; max-width:500px; margin:auto; padding:2em; }
+  input, textarea { width:100%; margin:0.5em 0; padding:0.5em; }
+</style>
+</head>
+<body>
+<h2>Nuevo recuerdo</h2>
+<form id="formulario">
+  <input id="titulo" placeholder="Título del recuerdo" required><br>
+  <textarea id="texto" placeholder="Texto o mensaje..." rows="5" required></textarea><br>
+  <input id="enlace" placeholder="Enlace (Drive, YouTube, etc.)"><br>
+  <button>Guardar</button>
+</form>
+
+<script>
+document.getElementById('formulario').addEventListener('submit', e => {
+  e.preventDefault();
+  alert('Aquí se guardaría el nuevo recuerdo. (Por ahora se añade manualmente en el archivo recuerdos.json)');
+});
+</script>
+</body>
+</html>
